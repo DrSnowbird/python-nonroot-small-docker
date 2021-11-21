@@ -1,4 +1,4 @@
-ARG BASE=${BASE:-openkbs/python-nonroot-small-docker}
+ARG BASE=${BASE:-openkbs/{{PARENT_CONTAINER}}}
 FROM ${BASE}
 
 MAINTAINER DrSnowbird "DrSnowbird@openkbs.org"
@@ -22,10 +22,8 @@ ENV APP_MAIN=${APP_MAIN:-setup.sh}
 
 COPY --chown=${USER}:${USER} docker-entrypoint.sh /
 COPY --chown=${USER}:${USER} ${APP_MAIN} ${APP_HOME}/setup.sh
-COPY --chown=${USER}:${USER} scripts/pip-install-requirements.sh ${APP_HOME}/pip-install-requirements.sh
 
-RUN sudo chmod +x /docker-entrypoint.sh ${APP_HOME}/setup.sh ${APP_HOME}/pip-install-requirements.sh && \
-    ${APP_HOME}/pip-install-requirements.sh
+RUN sudo chmod +x /docker-entrypoint.sh ${APP_HOME}/setup.sh 
 
 #########################################
 ##### ---- Docker Entrypoint : ---- #####
