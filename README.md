@@ -35,7 +35,7 @@ or, explicitly disable GPU to use CPU.
 ```
 # Create your own image from this
 ```
-FROM openkbs/python-non-root
+FROM openkbs/python-nonroot-small-docker
 ```
 # Quick commands
 * build.sh - build local image
