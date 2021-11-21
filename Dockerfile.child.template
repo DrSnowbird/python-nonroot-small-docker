@@ -22,8 +22,10 @@ ENV APP_MAIN=${APP_MAIN:-setup.sh}
 
 COPY --chown=${USER}:${USER} docker-entrypoint.sh /
 COPY --chown=${USER}:${USER} ${APP_MAIN} ${APP_HOME}/setup.sh
+COPY --chown=${USER}:${USER} scripts/pip-install-requirements.sh ${APP_HOME}/pip-install-requirements.sh
 
-RUN sudo chmod +x /docker-entrypoint.sh ${APP_HOME}/setup.sh 
+RUN sudo chmod +x /docker-entrypoint.sh ${APP_HOME}/setup.sh ${APP_HOME}/pip-install-requirements.sh && \
+    ${APP_HOME}/pip-install-requirements.sh
 
 #########################################
 ##### ---- Docker Entrypoint : ---- #####
@@ -35,7 +37,6 @@ ENTRYPOINT ["/docker-entrypoint.sh"]
 #####################################
 WORKDIR ${APP_HOME}
 USER ${USER}
-RUN bash $HOME/venv/bin/activate && python -m pip --no-cache-dir install --ignore-installed -U -r requirements.txt
 
 ######################
 #### (Test only) #####
