@@ -31,11 +31,11 @@ FROM debian:buster AS runtime
 ###################################
 ENV USER_ID=${USER_ID:-1000}
 ENV GROUP_ID=${GROUP_ID:-1000}
-
 ENV USER=${USER:-developer}
 ENV HOME=/home/${USER}
 
-RUN apt-get update && apt-get install -y --no-install-recommends sudo && \
+ENV LANG C.UTF-8
+RUN apt-get update && apt-get install -y --no-install-recommends sudo curl wget unzip ca-certificates && \
     useradd -ms /bin/bash ${USER} && \
     export uid=${USER_ID} gid=${GROUP_ID} && \
     mkdir -p /home/${USER} && \
@@ -46,8 +46,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends sudo && \
     echo "${USER} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USER} && \
     chmod 0440 /etc/sudoers.d/${USER} && \
     chown -R ${USER}:${USER} /home/${USER} && \
-    apt-get autoremove
-
+    apt-get autoremove; \
+    rm -rf /var/lib/apt/lists/* && \
+    echo "vm.max_map_count=262144" | tee -a /etc/sysctl.conf
+    
 ###################################
 #### ---- Copy: venv   ---- ####
 ###################################
@@ -64,10 +66,13 @@ ENV TOKENIZERS_PARALLELISM=false
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
 
-############################### 
-#### ---- Entrypoint:     ----#
-###############################
-COPY --chown=$USER:$USER ./docker-entrypoint.sh /
+#########################################
+##### ---- Docker Entrypoint : ---- #####
+#########################################
+COPY --chown=${USER}:${USER} docker-entrypoint.sh /
+COPY --chown=${USER}:${USER} scripts /scripts
+COPY --chown=${USER}:${USER} certificates /certificates
+RUN /scripts/setup_system_certificates.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 ##################################
@@ -76,5 +81,6 @@ ENTRYPOINT ["/docker-entrypoint.sh"]
 USER ${USER}
 WORKDIR "$HOME"
 
-CMD ["bash"]
+#CMD ["/bin/bash"]
+CMD ["python", "-V"]
 
