@@ -4,6 +4,10 @@
 # The build-stage image:
 FROM continuumio/miniconda3 AS build
 
+COPY scripts /scripts
+COPY certificates /certificates
+RUN /scripts/setup_system_certificates.sh
+
 # Install the package as normal:
 COPY environment.yml .
 RUN conda env create -f environment.yml
@@ -33,6 +37,10 @@ ENV USER_ID=${USER_ID:-1000}
 ENV GROUP_ID=${GROUP_ID:-1000}
 ENV USER=${USER:-developer}
 ENV HOME=/home/${USER}
+
+COPY scripts /scripts
+COPY certificates /certificates
+RUN /scripts/setup_system_certificates.sh
 
 ENV LANG C.UTF-8
 RUN apt-get update && apt-get install -y --no-install-recommends sudo curl wget unzip ca-certificates && \
