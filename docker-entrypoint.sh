@@ -16,6 +16,8 @@ env
 
 echo ">>> inputs: $@"
 
+source ${HOME}/venv/bin/activate
+
 APP_MAIN=${APP_MAIN:-setup.sh}
 
 base_app=$(basename $APP_MAIN)

@@ -82,5 +82,5 @@ USER ${USER}
 WORKDIR "$HOME"
 
 #CMD ["/bin/bash"]
-CMD ["python", "-V"]
+CMD ["python3", "-V"]
 
