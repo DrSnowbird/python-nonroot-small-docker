@@ -9,6 +9,8 @@ COPY certificates /certificates
 RUN /scripts/setup_system_certificates.sh
 
 # Install the package as normal:
+RUN conda config --set ssl_verify no && conda update -n base -c defaults conda
+
 COPY environment.yml .
 RUN conda env create -f environment.yml
 

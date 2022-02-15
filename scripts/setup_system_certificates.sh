@@ -178,7 +178,6 @@ function setupSystemCertificates() {
     if [ ! -s ${TARGET_CERTIFICATES_DIR} ]; then
         echo -e "*** TARGET_CERTIFICATES_DIR: ${TARGET_CERTIFICATES_DIR}: Not Found!"
         $sudo mkdir -p ${TARGET_CERTIFICATES_DIR}
-        exit 9
     fi
     if [ -s /etc/ca-certificates/update.d/docker-openjdk ]; then
         cat /etc/ca-certificates/update.d/docker-openjdk
