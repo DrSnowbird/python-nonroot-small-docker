@@ -2,7 +2,12 @@
 
 echo "####################### Components: $(basename $0) ###########################"
 
-sudo = `which sudo`
+which sudo
+if [ $? -gt 0 ]; then
+    sudo=""
+else
+    sudo=sudo
+fi
 
 cat /etc/*rel*
 
@@ -184,7 +189,7 @@ function setupSystemCertificates() {
         echo ">> JAVA PATH=`which java`"
         $sudo sed -i "s#\$JAVA_HOME#$JAVA_HOME#g" /etc/ca-certificates/update.d/docker-openjdk
         env | grep -i java
-        cat /etc/ca-certificates/update.d/docker-openjdk
+        $sudo cat /etc/ca-certificates/update.d/docker-openjdk
     fi
     for cert in `cd ${SOURCE_CERTIFICATES_DIR} && ls * | grep -v dummy`; do
         ## -- Converting from PEM to CRT: -- ##
